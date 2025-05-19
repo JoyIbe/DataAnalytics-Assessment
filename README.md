@@ -83,3 +83,29 @@ Handling accounts with no transactions	| Used LEFT JOIN and MAX(...) IS NULL log
 Calculating accurate inactivity	| Used DATEDIFF(CURDATE(), MAX(...)) to compute days since last activity.
 
 
+
+ ## 4. Customer Lifetime Value (CLV) Estimation
+ 
+ ### Question: Estimate the CLV for each customer
+For each customer:
+- Calculate **tenure in months** since signup.
+- Count total number of transactions.
+- Compute average profit per transaction (0.1% of transaction value).
+- Calculate Estimate CLV using the formula
+
+### Approach:
+Used a single SQL query with the following structure:
+
+1. Join `users_customuser` with `savings_savingsaccount` on `owner_id` to link each transaction with its user.
+
+2. Account tenure was calculated using `TIMESTAMPDIFF(MONTH, created_on, CURDATE())`.
+
+3. Total transactions was calculated using `COUNT(s.id)`.
+
+4. Average profit per transaction was derived from `AVG(s.confirmed_amount * 0.001)`.
+
+5. The CLV formula was applied using `ROUND()` for readability.
+
+6. The final output was sorted by `estimated_clv` in descending order to show the highest-value customers first.
+
+
